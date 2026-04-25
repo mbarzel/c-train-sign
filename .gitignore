@@ -1,0 +1,7 @@
+circuitpy/secrets.py
+*.uf2
+*.zip
+bundle/
+__pycache__/
+*.pyc
+mta-led-sign/
