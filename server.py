@@ -43,6 +43,9 @@ def fetch_arrivals():
     feed.ParseFromString(raw)
 
     now = time.time()
+    feed_age = now - feed.header.timestamp
+    print(f"[{time.strftime('%H:%M:%S')}] Feed age: {feed_age:.0f}s")
+
     arrivals = []
 
     for entity in feed.entity:
@@ -53,10 +56,13 @@ def fetch_arrivals():
         for stu in entity.trip_update.stop_time_update:
             if stu.stop_id != STOP_ID:
                 continue
+            # skip stops where the realtime system has no prediction (falls back to schedule)
+            if stu.schedule_relationship == 2:  # NO_DATA
+                continue
             t = stu.arrival.time or stu.departure.time
             if t <= 0:
                 continue
-            minutes = int((t - now) / 60)
+            minutes = round((t - now) / 60)
             if minutes > 0:
                 arrivals.append(minutes)
 
