@@ -43,9 +43,6 @@ def fetch_arrivals():
     feed.ParseFromString(raw)
 
     now = time.time()
-    feed_age = now - feed.header.timestamp
-    print(f"[{time.strftime('%H:%M:%S')}] Feed age: {feed_age:.0f}s")
-
     arrivals = []
 
     for entity in feed.entity:
@@ -62,7 +59,7 @@ def fetch_arrivals():
             t = stu.arrival.time or stu.departure.time
             if t <= 0:
                 continue
-            minutes = round((t - now) / 60)
+            minutes = round((t - now) / 60) - 3
             if minutes > 0:
                 arrivals.append(minutes)
 
